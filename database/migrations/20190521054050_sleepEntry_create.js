@@ -1,21 +1,21 @@
 exports.up = function(knex, Promise) {
     return knex.schema
-    .createTable('sleepEntry', tbl => {
+    .createTable('sleeps', tbl => {
         tbl.increments()
 
-        tbl
-        .string('username', 255)
-        .notNullable()
-        .unique()
-
-        tbl.string('password', 255)
+        tbl.datetime('timeInBed')
         .notNullable()
 
-        tbl.string('firstName', 255)
+        tbl.datetime('timeWakeUp')
         .notNullable()
 
-        tbl.string('lastName', 255)
+        tbl.integer('user_id')
+        .unsigned()
         .notNullable()
+        .references('id')
+        .inTable('auth')
+        .onDelete('RESTRICT')
+        .onUpdate('CASCADE')
 
         tbl.timestamps(true, true); // create_at and updated_at
     })
@@ -23,5 +23,5 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
     
-    return knex.schema.dropTableIfExists('sleepEntry')
+    return knex.schema.dropTableIfExists('sleeps')
 };
