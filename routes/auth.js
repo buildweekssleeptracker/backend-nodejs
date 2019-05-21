@@ -29,6 +29,7 @@ const login = async(req, res) => {
         const token = generateToken(user); // <<<<<<<<<<<<<<<<<<<<<<<<
         res.status(200).json({
           message: `Welcome ${user.username}!`,
+          username: user.username,
           token,
         });
       } else {
@@ -63,6 +64,7 @@ const register = async(req, res) => {
   const token = generateToken(newUser); // <<<<<<<<<<<<<<<<<<<<<<<<
   res.status(200).json({
     message: `Welcome ${newUser.username}!`,
+    username: user.username,
     token,
   });
 
