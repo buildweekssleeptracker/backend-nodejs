@@ -23,6 +23,12 @@ exports.seed = function(knex, Promise) {
           password:	'$2a$10$fTw1NAW/EqC7u2jHsAiBneR7Y6tiCyqfV8Q7Xv0LOckpRHF2NtG.i',	
           firstName: 'Duc',	
           lastName: 'Vu'
+        },
+        {
+          username: 'BDesselle', 
+          password:	'$2a$10$fTw1NAW/EqC7u2jHsAiBneR7Y6tiCyqfV8QBLD7Xv0LOckpRHF2NtG.k',	
+          firstName: 'Brandon',	
+          lastName: 'Desselle'
         }
       ]);
     });
