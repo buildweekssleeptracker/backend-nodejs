@@ -25,3 +25,10 @@ function findById(id) {
     .where({ id })
     .first();
 }
+
+
+function findByUsername(id) {
+  return db(table)
+    .where({ id })
+    .first();
+}

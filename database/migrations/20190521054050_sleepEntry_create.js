@@ -16,12 +16,35 @@ exports.up = function(knex, Promise) {
         .inTable('auth')
         .onDelete('RESTRICT')
         .onUpdate('CASCADE')
+        
+        tbl.integer('moodBeforeBed')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('moods')
+        .onDelete('RESTRICT')
+        .onUpdate('CASCADE')
+
+        tbl.integer('moodDuringDay')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('moods')
+        .onDelete('RESTRICT')
+        .onUpdate('CASCADE')
+
+        tbl.integer('moodAfterDay')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('moods')
+        .onDelete('RESTRICT')
+        .onUpdate('CASCADE')
 
         tbl.timestamps(true, true); // create_at and updated_at
     })
 };
 
 exports.down = function(knex, Promise) {
-    
     return knex.schema.dropTableIfExists('sleeps')
 };
