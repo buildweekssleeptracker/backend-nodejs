@@ -7,6 +7,7 @@ module.exports = {
   findById,
   update,
   getDuration,
+  getScore,
   remove
 };
 
@@ -30,11 +31,13 @@ function findById(id) {
 }
 
 async function update(id, item) {
-  await db(table)
+  const result = await db(table)
     .where('id', Number(id))
     .update(item);
-  
-  return findById(id);
+
+    if (result) {
+      return await findById(id);
+    }
 }
 
 function remove(id) {
@@ -46,4 +49,11 @@ function remove(id) {
 function getDuration(sleep) {
   const { timeWakeUp, timeInBed } = sleep
   return (new Date(timeWakeUp) - new Date(timeInBed)) / 60 / 60 / 1000
+}
+
+function getScore(sleep) {
+  console.log(sleep)
+
+  const { moodBeforeBed, moodDuringDay, moodAfterBed } = sleep
+  return (moodDuringDay + moodAfterBed + moodBeforeBed) / 3
 }

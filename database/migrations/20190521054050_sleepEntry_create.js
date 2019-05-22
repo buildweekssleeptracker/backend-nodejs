@@ -4,10 +4,10 @@ exports.up = function(knex, Promise) {
         tbl.increments()
 
         tbl.datetime('timeInBed')
-        .notNullable()
+        // .notNullable()
 
         tbl.datetime('timeWakeUp')
-        .notNullable()
+        // .notNullable()
 
         tbl.integer('user_id')
         .unsigned()
@@ -19,27 +19,24 @@ exports.up = function(knex, Promise) {
         
         tbl.integer('moodBeforeBed')
         .unsigned()
-        .notNullable()
-        .references('id')
-        .inTable('moods')
-        .onDelete('RESTRICT')
-        .onUpdate('CASCADE')
+        // .notNullable()
+        // .references('id')
 
         tbl.integer('moodDuringDay')
         .unsigned()
-        .notNullable()
-        .references('id')
-        .inTable('moods')
-        .onDelete('RESTRICT')
-        .onUpdate('CASCADE')
+        // .notNullable()
+        // .references('id')
+        // .inTable('moods')
+        // .onDelete('RESTRICT')
+        // .onUpdate('CASCADE')
 
-        tbl.integer('moodAfterDay')
+        tbl.integer('moodAfterBed')
         .unsigned()
-        .notNullable()
-        .references('id')
-        .inTable('moods')
-        .onDelete('RESTRICT')
-        .onUpdate('CASCADE')
+        // .notNullable()
+        // .references('id')
+        // .inTable('moods')
+        // .onDelete('RESTRICT')
+        // .onUpdate('CASCADE')
 
         tbl.timestamps(true, true); // create_at and updated_at
     })

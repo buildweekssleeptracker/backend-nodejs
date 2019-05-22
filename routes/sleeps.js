@@ -2,13 +2,13 @@ const router = require('express').Router();
 
 const Sleeps = require('../models/sleeps');
 const restricted = require('../util/authenticator');
+const asyncHandler = require('../util/asyncHandler')
 
 router.get('/', restricted, (req, res) => get(req, res));
 router.get('/:id', restricted, (req, res) => getById(req, res));
 router.post('/', restricted, (req, res) => post(req, res));
-router.put('/:id', restricted, (req, res) => put(req, res));
-
-
+router.put('/:id', restricted, asyncHandler(async (req, res) => await put(req, res)));
+router.delete('/:id', restricted, (req, res) => remove(req, res));
 
 const get = (req, res) => {
   console.log(req.decodedToken.subject)
@@ -43,11 +43,12 @@ const post = (req, res) => {
   const user_id = req.decodedToken.subject
   const sleepEntry = req.body
   const duration = Sleeps.getDuration(sleepEntry)
-  // console.log(duration)
+  const score = Sleeps.getScore(sleepEntry)
   Sleeps.add({ 
     ...sleepEntry, 
     duration, 
-    user_id 
+    user_id,
+    score
   })
     .then(results => {
       return res.status(201).json(results);
@@ -55,40 +56,41 @@ const post = (req, res) => {
     .catch(err => res.send(err));
 }
 
-const put = (req, res) => {
+const put = async (req, res) => {
 
-  console.log(req.decodedToken.subject)
+  // console.log(req.body)
   const sleep_id = req.params.id
   const user_id = req.decodedToken.subject
+  const result = await Sleeps.findBy({user_id, id: sleep_id}).first()
+  
+  if(!result) {
+    return res.status(404).json("Unauthorized Item");
+  }
+  
+  const pendingItem = { ...result, ...req.body } 
+  // console.log(pendingItem)
+  const duration = Sleeps.getDuration(pendingItem)
+  const score = Sleeps.getScore(pendingItem)
 
-  Sleeps.findBy({user_id, id: sleep_id})
-    .then(results => {
-      console.log(results)
-      if (results[0]) {
-        const sleepEntry = req.body
-        const duration = Sleeps.getDuration(sleepEntry)
-        Sleeps.update(
-          sleep_id, 
-          { 
-            ...sleepEntry, 
-            duration, 
-            user_id 
-          })
-          .then(result => {
-            res.status(202).json(result) 
-          })
-          .catch(err => res.status(500).json(err));
-      }
-      else {
-        return res.status(404).json("Unauthorized Item");
-      }
-    })
-    .catch(err => res.send(err));
+  const newItem = { 
+    ...pendingItem,
+    user_id,
+    duration,
+    score,
+  }
+
+  const updatedItem = await Sleeps.update(result.id, newItem)
+  if (updatedItem) {
+    res.status(200).json(updatedItem)
+  } else {
+    res.status(500).json('Update Failed')
+  }
 }
 
 
 
-router.delete('/:id', restricted, (req, res) => {
+
+const remove = (req, res) => {
   // console.log(req.decodedToken.subject)
   const user_id = req.decodedToken.subject
   Sleeps.findBy({user_id, id: req.params.id})
@@ -104,21 +106,19 @@ router.delete('/:id', restricted, (req, res) => {
       }
     })
     .catch(err => res.send(err));
-});
-
-
-
-function checkRole(role) {
-  return function(req, res, next) {
-    if (
-      req.decodedToken
-    ) {
-      next();
-    } else {
-      res.status(403).json({ message: "can't touch this!" });
-    }
-  };
 }
+
+// function checkRole(role) {
+//   return function(req, res, next) {
+//     if (
+//       req.decodedToken
+//     ) {
+//       next();
+//     } else {
+//       res.status(403).json({ message: "can't touch this!" });
+//     }
+//   };
+// }
 
 // const scopes = 'student:read;student:write;student:delete;salary:read'
 
