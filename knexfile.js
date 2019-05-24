@@ -1,34 +1,55 @@
 // Update with your config settings.
+const prodDbConnection = {
+  host: 'heroku',
+  database: 'user',
+  username: 'jake',
+  password: 'pass'
+}
+const sleeperDBconnection = process.env.DATABASE_URL || prodDbConnection
 
 module.exports = {
 
   development: {
     client: 'sqlite3',
-    useNullAsDefault: true,
     connection: {
-      filename: './database/SleepTracker.db3'
+      filename: './data/dev.sqlite3'
     },
+    useNullAsDefault: true,
     migrations: {
-      directory: './database/migrations',
+      directory: './data/migrations'
     },
-    seed: {
-      directory: './database/seed',
+    seeds: {
+      directory: './data/seeds',
+    },
+    pool: {
+      afterCreate: (conn, done) => {
+        conn.run('PRAGMA foreign_keys = ON', done);
+      }
     },
   },
 
   testing: {
     client: 'sqlite3',
-    useNullAsDefault: true,
     connection: {
-      filename: './database/SleepTracker.testing.db3'
+      filename: './data/test.db3',
     },
+    useNullAsDefault: true,
     migrations: {
-      directory: './database/migrations',
+      directory: './data/migrations',
     },
-    seed: {
-      directory: './database/seed',
+    seeds: {
+      directory: './data/seeds',
     },
   },
 
-
+  production: {
+    client: 'pg',
+    connection: sleeperDBconnection,
+    migrations: {
+      directory: './data/migrations'
+    },
+    seeds: {
+      directory: './data/seeds',
+    },
+  }
 };
