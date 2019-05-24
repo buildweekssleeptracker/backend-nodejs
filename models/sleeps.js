@@ -57,3 +57,23 @@ function getScore(sleep) {
   const { moodBeforeBed, moodDuringDay, moodAfterBed } = sleep
   return (moodDuringDay + moodAfterBed + moodBeforeBed) / 3
 }
+
+async function getAvgSleepData(id) {
+  let today = new Date();
+  let sixDaysback = new Date();
+  sixDaysback.setDate(sixDaysback.getDate() - 6);
+  today = dateFormat(today, 'yyyy-mm-dd');
+  sixDaysback = dateFormat(sixDaysback, 'yyyy-mm-dd');
+  const avarages = await db('sleep')
+      .avg('timeSlept as avgTimeSlept')
+      .avg('moodAfterBed as postMood')
+      .avg('sleepMood as avgSleepMood')
+      .whereBetween('date', [sixDaysback, today])
+      .andWhere('user_id', id)
+      .first();
+  return {
+      avgTimeSlept: Math.round(avarages.avgTimeSlept),
+      postMood: Math.round(avarages.postMood),
+      avgSleepMood: Math.round(avarages.avgSleepMood),
+  };
+}
