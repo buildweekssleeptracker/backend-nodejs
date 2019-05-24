@@ -16,11 +16,11 @@ module.exports = {
     },
   },
 
-  test: {
+  testing: {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
-      filename: './database/SleepTracker.test.db3'
+      filename: './database/SleepTracker.testing.db3'
     },
     migrations: {
       directory: './database/migrations',
