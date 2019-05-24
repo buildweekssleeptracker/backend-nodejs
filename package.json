@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watch --verbose",
+    "test": "jest",
     "start": "nodemon index.js"
   },
   "keywords": [],
@@ -16,7 +16,7 @@
     "supertest": "^4.0.2"
   },
   "engines": {
-    "node":"10.15.3"
+    "node": "10.15.3"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
